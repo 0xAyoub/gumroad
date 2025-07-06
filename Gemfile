@@ -7,10 +7,64 @@ ruby "3.4.3"
 gem "rails", "7.1.3.4"
 gem "rake", "13.2.1"
 
-# App gems nécessaires en production/staging
+group :development do
+  gem "derailed_benchmarks", "~> 2.1"
+end
+
+group :staging, :production do
+  source "https://gems.contribsys.com/" do
+    gem "sidekiq-pro", "~> 7.2"
+  end
+end
+
+group :development, :test do
+  gem "bundler"
+  gem "dotenv-rails", "~> 2.8"
+  gem "knapsack_pro", "~> 7.0"
+  gem "pry-byebug", "~> 3.10"
+  gem "pry-rails", "~> 0.3", require: "pry-rails/console"
+  gem "rubocop", "~> 1.65.0", require: false
+  gem "rubocop-rspec", "~> 3.0.0", require: false
+  gem "rubocop-performance", "~> 1.21.0", require: false
+  gem "rubocop-rake", "~> 0.6.0", require: false
+  gem "rubocop-rails", "~> 2.26.0", require: false
+  gem "active_record_query_trace", "~> 1.8"
+  gem "shoulda-matchers", "~> 6.0"
+  gem "spring", "~> 4.0"
+  gem "spring-commands-rspec", "~> 1.0"
+end
+
+group :test do
+  gem "capybara", "~> 3.38"
+  gem "database_cleaner-active_record", "~> 2.0"
+  gem "database_cleaner-mongoid", "~> 2.0"
+  gem "factory_bot_rails", "~> 6.4"
+  gem "faker", "~> 3.1"
+  gem "rspec", "~> 3.12"
+  gem "rspec-github", "~> 2.4.0", require: false
+  gem "rspec-rails", "~> 6.0"
+  gem "rspec-retry", "~> 0.6"
+  gem "rspec_junit_formatter", "~> 0.6"
+  gem "rspec-sidekiq", "~> 5.0"
+  gem "rails-controller-testing", "~> 1.0"
+  gem "vcr", "~> 6.1"
+  gem "webmock", "~> 3.18", require: "webmock/rspec"
+  gem "json_matchers", "~> 0.11", require: "json_matchers/rspec"
+  gem "capybara_accessible_selectors", github: "citizensadvice/capybara_accessible_selectors",
+                                       ref: "161b8c5b1a0a5408af914d7544956372e9da2c9e"
+  gem "puffing-billy", "~> 4.0.0", require: "billy/capybara/rspec"
+  gem "super_diff", "~> 0.12.0", require: false
+end
+
+group :deployer do
+  gem "byebug", "~> 11.1"
+  gem "colorize", "~> 1.0"
+  gem "dotenv", "~> 2.8"
+end
+
 gem "acme-client", "~> 2.0"
 gem "actionpack-action_caching", "~> 1.2"
-gem "actionpack-cloudflare", "~> 1.1"
+gem "actionpack-cloudflare", "~> 1.1", group: %i[staging production] # Verify that this works after upgrading the Rails gem version
 gem "activerecord-mysql-index-hint", "~> 0.0"
 gem "active_model_otp", "~> 2.3"
 gem "after_commit_everywhere", "~> 1.3"
@@ -18,12 +72,14 @@ gem "active_hash", "~> 3.3"
 gem "alterity", "~> 1.4"
 gem "ancestry", "~> 4.2"
 gem "apple_id", "~> 1.5"
+# AWS SDK Gems
 gem "aws-sdk-s3", "~> 1.117"
 gem "aws-sdk-sqs", "~> 1.69"
 gem "aws-sdk-elastictranscoder", "~> 1.39"
 gem "aws-sdk-autoscaling", "~> 1.84"
 gem "aws-sdk-mediaconvert", "~> 1.96"
 gem "aws-sdk-sns", "~> 1.57"
+# End AWS SDK Gems
 gem "babel-transpiler", "~> 0.7"
 gem "bootsnap", "~> 1.15", require: false
 gem "braintree", "~> 4.9"
@@ -79,6 +135,7 @@ gem "nokogiri", "~> 1.13"
 gem "omniauth-facebook", "~> 10.0"
 gem "omniauth-google-oauth2", "~> 1.1", ">= 1.1.1"
 gem "omniauth-rails_csrf_protection", "~> 1.0"
+# Update to a normal release once https://github.com/isaacsanders/omniauth-stripe-connect/issues/67 is fixed
 gem "omniauth-stripe-connect", github: "isaacsanders/omniauth-stripe-connect", ref: "468dd9acaccdbba38a38cdbcdf7f10c17be25e89"
 gem "omniauth-twitter", "~> 1.4"
 gem "paper_trail", "~> 15.0"
@@ -96,6 +153,7 @@ gem "pundit", "~> 2.3"
 gem "public_suffix", "~> 5.0"
 gem "rack-attack", "~> 6.6"
 gem "rack-cors", "~> 2.0"
+gem "rack-mini-profiler", "~> 4.0", require: false
 gem "rack-ssl", "~> 1.4"
 gem "rack-timeout", "~> 0.6", require: "rack/timeout/base"
 gem "rack-utf8_sanitizer", "~> 1.8"
@@ -112,15 +170,18 @@ gem "ruby-oembed", "~> 0.16", require: "oembed"
 gem "rubyzip", "~> 2.3"
 gem "sass-rails", "~> 6.0"
 gem "secure_headers", "~> 6.5"
+gem "selenium-webdriver", "~> 4.7"
 gem "sendgrid-ruby", "~> 6.6"
 gem "shakapacker", "~> 8.0"
 gem "sidekiq-cron", "~> 1.9"
+gem "suo", "~> 0.4"
 gem "sidekiq", "~> 7.2"
 gem "sidekiq-unique-jobs", "~> 8.0"
 gem "sitemap_generator", "~> 6.3"
 gem "slack-notifier", "~> 2.4"
 gem "sprockets-rails", "~> 3.4", require: "sprockets/railtie"
 gem "ssrf_filter", "~> 1.2.0"
+gem "stackprof", "~> 0.2"
 gem "state_machines-activerecord", "~> 0.8"
 gem "streamio-ffmpeg", "~> 3.0"
 gem "stripe", "~> 12.0"
@@ -132,6 +193,7 @@ gem "twitter", "~> 8.0"
 gem "typhoeus", "~> 1.4"
 gem "valvat", "~> 1.2"
 gem "warden", "~> 1.2"
+gem "webdrivers", "~> 5.2"
 gem "zip-zip", "~> 0.3"
 gem "rouge", "~> 4.0"
 gem "ruby-openai", "~> 7.0"

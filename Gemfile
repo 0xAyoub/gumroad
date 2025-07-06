@@ -12,9 +12,6 @@ group :development do
 end
 
 group :staging, :production do
-  source "https://gems.contribsys.com/" do
-    gem "sidekiq-pro", "~> 7.2"
-  end
 end
 
 group :development, :test do
